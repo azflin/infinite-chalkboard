@@ -37,9 +37,10 @@ describe("InfiniteChalkboard contract", function () {
     // Addr1 writes. Check contract balance and owner balances have increased correctly
     let ownerBalance = await ethers.provider.getBalance(owner.address);
     await infiniteChalkboard.connect(addr1).write("Hello World!", {value: ethers.utils.parseEther("0.1")});
-    expect(await ethers.provider.getBalance(owner.address)).to.equal(ownerBalance.add(ethers.utils.parseEther("0.1").mul(109).div(110)));
+    let valueToPriorAuthor = ethers.utils.parseEther("0.1").mul(109).div(110);
+    expect(await ethers.provider.getBalance(owner.address)).to.equal(ownerBalance.add(valueToPriorAuthor));
     let contractBalance = await ethers.provider.getBalance(infiniteChalkboard.address);
-    expect(contractBalance).to.equal(ethers.utils.parseEther("0.1").sub(ethers.utils.parseEther("0.1").mul(109).div(110)));
+    expect(contractBalance).to.equal(ethers.utils.parseEther("0.1").sub(valueToPriorAuthor));
     
     // Addr 2 writes. Check contract balance and addr1 balances have increased correctly
     // let addr1Balance = await ethers.provider.getBalance(addr1.address);
