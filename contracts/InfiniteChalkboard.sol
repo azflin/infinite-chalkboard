@@ -13,6 +13,8 @@ contract InfiniteChalkboard {
     function write(string calldata _message) payable external {
         require(msg.value >= cost, "Insufficient payment.");
         message = _message;
+        (bool success, ) = author.call{value: msg.value}("");
+        require(success, "Transfer to previous author failed.");
         author = msg.sender;
     }
 }
