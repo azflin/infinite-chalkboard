@@ -33,9 +33,26 @@ describe("InfiniteChalkboard contract", function () {
     await expect(infiniteChalkboard.write("Hello World!", {value: ethers.utils.parseEther("0.09")})).to.be.revertedWith("Insufficient payment.");
   });
 
-  it("Should pay previous author", async function () {
+  it("Should pay previous author and contract", async function () {
+    // Addr1 writes. Check contract balance and owner balances have increased correctly
     let ownerBalance = await ethers.provider.getBalance(owner.address);
     await infiniteChalkboard.connect(addr1).write("Hello World!", {value: ethers.utils.parseEther("0.1")});
-    expect(await ethers.provider.getBalance(owner.address)).to.equal(ownerBalance.add(ethers.utils.parseEther("0.1")));
+    expect(await ethers.provider.getBalance(owner.address)).to.equal(ownerBalance.add(ethers.utils.parseEther("0.1").mul(109).div(110)));
+    let contractBalance = await ethers.provider.getBalance(infiniteChalkboard.address);
+    expect(contractBalance).to.equal(ethers.utils.parseEther("0.1").sub(ethers.utils.parseEther("0.1").mul(109).div(110)));
+    
+    // Addr 2 writes. Check contract balance and addr1 balances have increased correctly
+    // let addr1Balance = await ethers.provider.getBalance(addr1.address);
+    // await infiniteChalkboard.connect(addr2).write("Hello World 2!", {value: ethers.utils.parseEther("0.11")});
+    // expect(await ethers.provider.getBalance(addr1.address)).to.equal(ownerBalance.add(ethers.utils.parseEther("0.11").mul(109).div(110)));
+  });
+
+  it("Should increase cost by 10% each write", async function () {
+    await infiniteChalkboard.write("Hello World!", {value: ethers.utils.parseEther("0.1")});
+    expect(await infiniteChalkboard.cost()).to.equal(ethers.utils.parseEther("0.11"));
+    await infiniteChalkboard.write("Hello World 2!", {value: ethers.utils.parseEther("0.11")});
+    expect(await infiniteChalkboard.cost()).to.equal(ethers.utils.parseEther("0.121"));
+    await infiniteChalkboard.write("Hello World 3!", {value: ethers.utils.parseEther("0.121")});
+    expect(await infiniteChalkboard.cost()).to.equal(ethers.utils.parseEther("0.1331"));
   });
 });
