@@ -43,9 +43,11 @@ describe("InfiniteChalkboard contract", function () {
     expect(contractBalance).to.equal(ethers.utils.parseEther("0.1").sub(valueToPriorAuthor));
     
     // Addr 2 writes. Check contract balance and addr1 balances have increased correctly
-    // let addr1Balance = await ethers.provider.getBalance(addr1.address);
-    // await infiniteChalkboard.connect(addr2).write("Hello World 2!", {value: ethers.utils.parseEther("0.11")});
-    // expect(await ethers.provider.getBalance(addr1.address)).to.equal(ownerBalance.add(ethers.utils.parseEther("0.11").mul(109).div(110)));
+    let addr1Balance = await ethers.provider.getBalance(addr1.address);
+    await infiniteChalkboard.connect(addr2).write("Hello World 2!", {value: ethers.utils.parseEther("0.11")});
+    valueToPriorAuthor = ethers.utils.parseEther("0.11").mul(109).div(110);
+    expect(await ethers.provider.getBalance(addr1.address)).to.equal(addr1Balance.add(valueToPriorAuthor));
+    expect(await ethers.provider.getBalance(infiniteChalkboard.address)).to.equal(contractBalance.add(ethers.utils.parseEther("0.11").sub(valueToPriorAuthor)));
   });
 
   it("Should increase cost by 10% each write", async function () {
