@@ -58,4 +58,13 @@ describe("InfiniteChalkboard contract", function () {
     await infiniteChalkboard.write("Hello World 3!", {value: ethers.utils.parseEther("0.121")});
     expect(await infiniteChalkboard.cost()).to.equal(ethers.utils.parseEther("0.1331"));
   });
+
+  it("Should only allow owner to withdraw", async function () {
+    infiniteChalkboard = infiniteChalkboard.connect(addr1);
+    await infiniteChalkboard.write("Hello World!", {value: ethers.utils.parseEther("0.1")});
+    await expect(infiniteChalkboard.withdraw()).to.be.reverted;
+    let ownerBalance = await ethers.provider.getBalance(owner.address);
+    await infiniteChalkboard.connect(owner).withdraw();
+    expect(await ethers.provider.getBalance(owner.address)).to.be.gt(ownerBalance);
+  });
 });
