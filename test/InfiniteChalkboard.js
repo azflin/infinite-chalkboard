@@ -67,4 +67,9 @@ describe("InfiniteChalkboard contract", function () {
     await infiniteChalkboard.connect(owner).withdraw();
     expect(await ethers.provider.getBalance(owner.address)).to.be.gt(ownerBalance);
   });
+
+  it("Should only allow messages less than 100 bytes", async function () {
+    await infiniteChalkboard.write("a".repeat(99), {value: ethers.utils.parseEther("0.1")});
+    await expect(infiniteChalkboard.write("a".repeat(100), {value: ethers.utils.parseEther("0.11")})).to.be.reverted;
+  });
 });
