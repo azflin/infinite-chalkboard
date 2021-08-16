@@ -8,6 +8,8 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
+    },
+    hardhat: {
       mining: {
         auto: false,
         interval: 5000
