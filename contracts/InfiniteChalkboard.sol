@@ -8,6 +8,8 @@ contract InfiniteChalkboard is Ownable {
     string public message;
     address payable public author;
 
+    event Write(string _message, address _author, uint _newCost);
+
     constructor() {
       author = msg.sender;
     }
@@ -20,6 +22,7 @@ contract InfiniteChalkboard is Ownable {
         require(success, "Transfer to previous author failed.");
         author = msg.sender;
         cost += cost / 10;
+        emit Write(_message, msg.sender, cost);
     }
 
     function withdraw() external onlyOwner {
