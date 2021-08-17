@@ -16,7 +16,7 @@ contract InfiniteChalkboard is Ownable {
 
     function write(string calldata _message) payable external {
         require(msg.value >= cost, "Insufficient payment.");
-        require(bytes(_message).length < 100, "Message must be smaller than 100 bytes.");
+        require(bytes(_message).length < 200, "Message must be smaller than 200 bytes.");
         message = _message;
         (bool success, ) = author.call{value: (msg.value * 109) / 110}("");
         require(success, "Transfer to previous author failed.");
