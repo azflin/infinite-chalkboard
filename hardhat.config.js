@@ -15,6 +15,11 @@ module.exports = {
     rinkeby: {
       url: process.env.RINKEBY_URL,
       accounts: [process.env.PRIVATE_KEY]
+    },
+    fantom: {
+      url: "https://rpc.ftm.tools/",
+      chainId: 250,
+      accounts: [process.env.PRIVATE_KEY]
     }
     // hardhat: {
     //   mining: {
